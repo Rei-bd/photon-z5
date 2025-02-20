@@ -140,9 +140,7 @@ int main() {
 	}
 
 	bmp.seekg(fileHeader.bfOffBits, ios::beg);
-	double offset = ceil(infoHeader.biWidth * infoHeader.biBitCount / 4.0f) * 4 - infoHeader.biWidth * infoHeader.biBitCount;
-
-	RGBQuad average = { 0, 0, 0, 0 };
+	double offset = infoHeader.biBitCount == 4 ? 0 : ceil(infoHeader.biWidth / 4.0f) * 4 - infoHeader.biWidth;
 
 	for (int y = infoHeader.biHeight - 1; y != -1; --y) {
 		for (int x = 0; x != infoHeader.biWidth; ++x) {
@@ -179,7 +177,7 @@ int main() {
 		double M = MO(pixels, infoHeader.biWidth, infoHeader.biHeight, c);
 		auto end = chrono::high_resolution_clock::now();
 		chrono::duration<double> dur = end - start;
-		cout << fixed << setprecision(6) << "Channel " << c << ": " << M << "\tTime: " << dur.count() / 1000 << endl;
+		cout << fixed << setprecision(6) << "Channel " << c << ": " << M << "\tTime: " << dur.count() << endl;
 		E.push_back(M);
 	}
 
@@ -189,6 +187,6 @@ int main() {
 		double S = CKO(pixels, infoHeader.biWidth, infoHeader.biHeight, c, E);
 		auto end = chrono::high_resolution_clock::now();
 		chrono::duration<double> dur = end - start;
-		cout << fixed << setprecision(6) << "Channel " << c << ": " << S << "\tTime: " << dur.count() / 1000 << endl;
+		cout << fixed << setprecision(6) << "Channel " << c << ": " << S << "\tTime: " << dur.count() << endl;
 	}
 }
